@@ -10,7 +10,7 @@ app.get("/api/ping", (req, res) => {
 });
 
 // Endpoint pour accepter des marchandises dans le stock
-app.post('/api/stock/:productId/movement', async (req, res) => {
+app.post("/api/stock/:productId/movement", async (req, res) => {
   const { productId } = req.params;
 
   // Vérifier que le produit existe dans le catalogue
@@ -24,12 +24,12 @@ app.post('/api/stock/:productId/movement', async (req, res) => {
     // Si le produit n'existe pas, renvoyer une erreur
     if (product) {
       // TODO : Ajouter la quantité fournie au stock
-      res.status(204).send("le produit est ajouté:" + product);
+      res.status(204).send({"le produit est ajouté" : product});
     } else {
-      res.status(400).send('Le produit n\'existe pas dans le catalogue');
+      res.status(400).send("Le produit n\'existe pas dans le catalogue");
     }
   } catch (error) {
-    res.status(500).send('Erreur lors de la vérification du produit');
+    res.status(500).send("Erreur lors de la vérification du produit");
   }
 });
 
