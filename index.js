@@ -36,7 +36,7 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
         const newQuantity = quantity
         stock.push({ productId: newProductId, quantity: newQuantity });
       }
-      res.status(200).send({ "le produit est ajouté": product, "stock": stock });
+      res.status(200).send({ "stock": stock });
       //res.status(204).send()
     } else {
       res.status(400).send("Le produit n'existe pas dans le catalogue");
