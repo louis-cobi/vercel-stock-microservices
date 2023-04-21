@@ -24,7 +24,7 @@ app.post('/api/stock/:productId/movement', async (req, res) => {
     // Si le produit n'existe pas, renvoyer une erreur
     if (product) {
       // TODO : Ajouter la quantité fournie au stock
-      res.status(204).send();
+      res.status(204).send("le produit est ajouté:" + product);
     } else {
       res.status(400).send('Le produit n\'existe pas dans le catalogue');
     }
