@@ -51,6 +51,21 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
         }
       }
       if(status === "Removal"){
+        const index = stock.findIndex((item) => item.productId === productId);
+        if (index !== -1) {
+          const availableQuantity = stock[index].reserved;
+          if (quantity <= availableQuantity) {
+            stock[index].reserved -= quantity;
+            res.status(200).send({ stock: stock });
+            return
+          } else {
+            res.status(400).send("La quantité demandée n'est pas disponible");
+            return
+          }
+        } else {
+          res.status(400).send("Le produit n'est pas connu du stock");
+          return
+        }
 
       }
       res.status(200).send({ stock: stock });
