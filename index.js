@@ -39,8 +39,10 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
           const requestedQuantity = +quantity;
           if (requestedQuantity >= availableQuantity) {
             const disponible = availableQuantity - requestedQuantity;
-            stock[index].disponible = disponible;
-            stock[index].reserved += requestedQuantity;
+            //stock[index].disponible = disponible;
+            //stock[index].reserved += requestedQuantity;
+            stock[index]["disponible"] = disponible;
+            stock[index]["reserved"] = requestedQuantity;
             res.status(200).send({ stock: stock });
           } else {
             res.status(400).send("La quantité demandée n'est pas disponible");
