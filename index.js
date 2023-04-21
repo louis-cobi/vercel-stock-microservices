@@ -12,12 +12,12 @@ app.get("/api/ping", (req, res) => {
 // Endpoint pour accepter des marchandises dans le stock
 app.post('/api/stock/:productId/movement', async (req, res) => {
   const { productId } = req.params;
-  const { quantity, status } = req.body // as StockMovementDto;
 
   // Vérifier que le produit existe dans le catalogue
   try {
     const response = await fetch(`http://microservices.tp.rjqu8633.odns.fr/api/products/${productId}`);
     const product = await response.json();
+    // const { quantity, status } = req.body as StockMovementDto;
     console.log(product);
 
     // Si le produit existe, ajouter la quantité fournie au stock
