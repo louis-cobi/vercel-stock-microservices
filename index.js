@@ -1,8 +1,10 @@
 // Add Express
 const express = require("express");
+const bodyParser = require("body-parser")
 
 // Initialize Express
 const app = express();
+app.use(bodyParser.json())
 
 let stock = [];
 // Create GET request
@@ -14,18 +16,12 @@ app.get("/api/ping", (req, res) => {
 app.post("/api/stock/:productId/movement", async (req, res) => {
   const { productId } = req.params;
   const { quantity } = req.body;
-
-  // Vérifier que le produit existe dans le catalogue
   try {
     const response = await fetch(
       `http://microservices.tp.rjqu8633.odns.fr/api/products/${productId}`
     );
     const product = await response.json();
-
-    // Si le produit existe, ajouter la quantité fournie au stock
-    // Si le produit n'existe pas, renvoyer une erreur
     if (product) {
-      // TODO : Ajouter la quantité fournie au stock
       const index = stock.findIndex((item) => item.productId === productId);
       if (index !== -1) {
         // Le produit est déjà connu du stock, ajouter la quantité fournie à la quantité en stock
