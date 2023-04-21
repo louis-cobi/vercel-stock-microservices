@@ -56,7 +56,7 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
       res.status(400).send("Le produit n'existe pas dans le catalogue");
     }
   } catch (error) {
-    res.status(500).send("Erreur lors de la vérification du produit");
+    res.status(500).send("Erreur lors de la vérification du produit" + JSON.stringify(error));
   }
 });
 
