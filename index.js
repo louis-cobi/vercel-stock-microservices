@@ -40,11 +40,14 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
             stock[index].quantity -= quantity;
             stock[index].reserved += quantity;
             res.status(200).send({ stock: stock });
+            return
           } else {
             res.status(400).send("La quantité demandée n'est pas disponible");
+            return
           }
         } else {
           res.status(400).send("Le produit n'est pas connu du stock");
+          return
         }
       }
       if(status === "Removal"){
@@ -52,11 +55,14 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
       }
       res.status(200).send({ stock: stock });
       //res.status(204).send()
+      return
     } else {
       res.status(400).send("Le produit n'existe pas dans le catalogue");
+      return
     }
   } catch (error) {
     res.status(500).send("Erreur lors de la vérification du produit" + JSON.stringify(error));
+    return
   }
 });
 
@@ -75,8 +81,8 @@ app.get("/api/stock/:productId", async (req, res) => {
 });
 
 // Initialize server
-app.listen(5000, () => {
-  console.log("Running on port 5000.");
+app.listen(5002, () => {
+  console.log("Running on port 5002.");
 });
 
 module.exports = app;
