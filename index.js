@@ -4,6 +4,7 @@ const express = require("express");
 // Initialize Express
 const app = express();
 
+let stock = []
 // Create GET request
 app.get("/api/ping", (req, res) => {
   res.send("PONG");
@@ -24,7 +25,15 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
     // Si le produit n'existe pas, renvoyer une erreur
     if (product) {
       // TODO : Ajouter la quantité fournie au stock
-      res.status(200).send({"le produit est ajouté" : product});
+      const index = stock.findIndex(item => item.productId === productId);
+      if (index !== -1) {
+        // Le produit est déjà connu du stock, ajouter la quantité fournie à la quantité en stock
+        stock[index].quantity += quantity;
+      } else {
+        // Le produit n'est pas connu du stock, ajouter une nouvelle entrée pour le produit avec la quantité fournie
+        stock.push({ productId, quantity });
+      }
+      res.status(200).send({"le produit est ajouté" : product, "stock" : stock});
       //res.status(204).send()
     } else {
       res.status(400).send("Le produit n\'existe pas dans le catalogue");
