@@ -32,9 +32,9 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
         stock[index].quantity += quantity;
       } else {
         // Le produit n'est pas connu du stock, ajouter une nouvelle entrée pour le produit avec la quantité fournie
-        //const newProductId = productId
-        //const newQuantity = quantity
-        stock.push({ productId, quantity });
+        const newProductId = productId
+        const newQuantity = quantity
+        stock.push({ productId: newProductId, quantity: newQuantity });
       }
       res.status(200).send({ "le produit est ajouté": product, "stock": stock });
       //res.status(204).send()
