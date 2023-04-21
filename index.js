@@ -1,4 +1,4 @@
-import { StockMovementDto, StockMovementType } from './stock.js';
+// import { StockMovementDto, StockMovementType } from './stock.js';
 // Add Express
 const express = require("express");
 
