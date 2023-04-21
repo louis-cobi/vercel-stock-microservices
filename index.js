@@ -43,8 +43,11 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
           if (requestedQuantity <= availableQuantity) {
             // La quantité demandée est disponible, soustraire la quantité réservée de la quantité disponible en stock
             const disponible = stock[index].quantity -= requestedQuantity;
+            console.log(disponible)
             stock[index].disponible += disponible;
+            console.log(stock[index].disponible)
             stock[index].reserved += requestedQuantity;
+            console.log(stock[index].reserved)
             res.status(200).send({ stock: stock });
           } else {
             // La quantité demandée n'est pas disponible, renvoyer une erreur
