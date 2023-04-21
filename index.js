@@ -25,10 +25,8 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
       if (status === "Supply") {
         const index = stock.findIndex((item) => item.productId === productId);
         if (index !== -1) {
-          // Le produit est déjà connu du stock, ajouter la quantité fournie à la quantité en stock
           stock[index].quantity += +quantity;
         } else {
-          // Le produit n'est pas connu du stock, ajouter une nouvelle entrée pour le produit avec la quantité fournie
           const newProductId = productId;
           const newQuantity = +quantity;
           stock.push({ productId: newProductId, quantity: newQuantity });
@@ -37,21 +35,17 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
       if(status === "Reserve"){
         const index = stock.findIndex((item) => item.productId === productId);
         if (index !== -1) {
-          // Le produit est connu du stock, vérifier si la quantité demandée est disponible
           const availableQuantity = stock[index].quantity;
           const requestedQuantity = +quantity;
-          if (requestedQuantity <= availableQuantity) {
-            // La quantité demandée est disponible, soustraire la quantité réservée de la quantité disponible en stock
+          if (requestedQuantity >= availableQuantity) {
             const disponible = availableQuantity - requestedQuantity;
             stock[index].disponible = disponible;
             stock[index].reserved += requestedQuantity;
             res.status(200).send({ stock: stock });
           } else {
-            // La quantité demandée n'est pas disponible, renvoyer une erreur
             res.status(400).send("La quantité demandée n'est pas disponible");
           }
         } else {
-          // Le produit n'est pas connu du stock, renvoyer une erreur
           res.status(400).send("Le produit n'est pas connu du stock");
         }
       }
