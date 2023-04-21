@@ -29,20 +29,16 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
         } else {
           const newProductId = productId;
           const newQuantity = +quantity;
-          stock.push({ productId: newProductId, quantity: newQuantity });
+          stock.push({ productId: newProductId, quantity: newQuantity , reserved: 0});
         }
       }
       if(status === "Reserve"){
         const index = stock.findIndex((item) => item.productId === productId);
         if (index !== -1) {
           const availableQuantity = stock[index].quantity;
-          const requestedQuantity = +quantity;
           if (requestedQuantity <= availableQuantity) {
-            const disponible = availableQuantity - requestedQuantity;
-            //stock[index].disponible = disponible;
-            //stock[index].reserved += requestedQuantity;
-            stock[index]["disponible"] = disponible;
-            stock[index]["reserved"] = requestedQuantity;
+            stock[index].quantity -= requestedQuantity;
+            stock[index].reserved += requestedQuantity;
             res.status(200).send({ stock: stock });
           } else {
             res.status(400).send("La quantité demandée n'est pas disponible");
