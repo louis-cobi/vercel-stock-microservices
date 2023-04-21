@@ -1,10 +1,10 @@
 // Add Express
 const express = require("express");
-const bodyParser = require("body-parser")
+const bodyParser = require("body-parser");
 
 // Initialize Express
 const app = express();
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 let stock = [];
 // Create GET request
@@ -15,24 +15,50 @@ app.get("/api/ping", (req, res) => {
 // Endpoint pour accepter des marchandises dans le stock
 app.post("/api/stock/:productId/movement", async (req, res) => {
   const { productId } = req.params;
-  const { quantity } = req.body;
+  const { quantity, status } = req.body;
   try {
     const response = await fetch(
       `http://microservices.tp.rjqu8633.odns.fr/api/products/${productId}`
     );
     const product = await response.json();
     if (product) {
-      const index = stock.findIndex((item) => item.productId === productId);
-      if (index !== -1) {
-        // Le produit est déjà connu du stock, ajouter la quantité fournie à la quantité en stock
-        stock[index].quantity += +quantity;
-      } else {
-        // Le produit n'est pas connu du stock, ajouter une nouvelle entrée pour le produit avec la quantité fournie
-        const newProductId = productId
-        const newQuantity = +quantity
-        stock.push({ productId: newProductId, quantity: newQuantity });
+      if (status === "Supply") {
+        const index = stock.findIndex((item) => item.productId === productId);
+        if (index !== -1) {
+          // Le produit est déjà connu du stock, ajouter la quantité fournie à la quantité en stock
+          stock[index].quantity += +quantity;
+        } else {
+          // Le produit n'est pas connu du stock, ajouter une nouvelle entrée pour le produit avec la quantité fournie
+          const newProductId = productId;
+          const newQuantity = +quantity;
+          stock.push({ productId: newProductId, quantity: newQuantity });
+        }
       }
-      res.status(200).send({ "stock": stock });
+      if(status === "Reserve"){
+        const index = stock.findIndex((item) => item.productId === productId);
+        if (index !== -1) {
+          // Le produit est connu du stock, vérifier si la quantité demandée est disponible
+          const availableQuantity = stock[index].quantity;
+          const requestedQuantity = +quantity;
+          if (requestedQuantity <= availableQuantity) {
+            // La quantité demandée est disponible, soustraire la quantité réservée de la quantité disponible en stock
+            const disponible = stock[index].quantity -= requestedQuantity;
+            stock[index].disponible += disponible;
+            stock[index].reserved += requestedQuantity;
+            res.status(200).send({ stock: stock });
+          } else {
+            // La quantité demandée n'est pas disponible, renvoyer une erreur
+            res.status(400).send("La quantité demandée n'est pas disponible");
+          }
+        } else {
+          // Le produit n'est pas connu du stock, renvoyer une erreur
+          res.status(400).send("Le produit n'est pas connu du stock");
+        }
+      }
+      if(status === "Removal"){
+
+      }
+      res.status(200).send({ stock: stock });
       //res.status(204).send()
     } else {
       res.status(400).send("Le produit n'existe pas dans le catalogue");
@@ -43,14 +69,14 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
 });
 
 app.get("/api/stock", async (req, res) => {
-  res.status(200).send({ "stock": stock });
+  res.status(200).send({ stock: stock });
 });
 
 app.get("/api/stock/:productId", async (req, res) => {
   const { productId } = req.params;
   const index = stock.findIndex((item) => item.productId === productId);
   if (index !== -1) {
-    res.status(200).send({ "quantity": stock[index].quantity });
+    res.status(200).send({ quantity: stock[index].quantity });
   } else {
     res.status(404).send("Le produit n'est pas connu du stock");
   }
