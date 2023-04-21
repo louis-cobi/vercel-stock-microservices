@@ -18,6 +18,7 @@ app.post('/stock/:productId/movement', async (req, res) => {
   try {
     const response = await fetch(`http://microservices.tp.rjqu8633.odns.fr/api/products/${productId}`);
     const product = await response.json();
+    console.log(product);
 
     // Si le produit existe, ajouter la quantité fournie au stock
     // Si le produit n'existe pas, renvoyer une erreur
