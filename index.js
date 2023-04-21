@@ -25,11 +25,11 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
       const index = stock.findIndex((item) => item.productId === productId);
       if (index !== -1) {
         // Le produit est déjà connu du stock, ajouter la quantité fournie à la quantité en stock
-        stock[index].quantity += quantity;
+        stock[index].quantity += +quantity;
       } else {
         // Le produit n'est pas connu du stock, ajouter une nouvelle entrée pour le produit avec la quantité fournie
         const newProductId = productId
-        const newQuantity = quantity
+        const newQuantity = +quantity
         stock.push({ productId: newProductId, quantity: newQuantity });
       }
       res.status(200).send({ "stock": stock });
@@ -39,6 +39,20 @@ app.post("/api/stock/:productId/movement", async (req, res) => {
     }
   } catch (error) {
     res.status(500).send("Erreur lors de la vérification du produit");
+  }
+});
+
+app.get("/api/stock", async (req, res) => {
+  res.status(200).send({ "stock": stock });
+});
+
+app.get("/api/stock/:productId", async (req, res) => {
+  const { productId } = req.params;
+  const index = stock.findIndex((item) => item.productId === productId);
+  if (index !== -1) {
+    res.status(200).send({ "quantity": stock[index].quantity });
+  } else {
+    res.status(404).send("Le produit n'est pas connu du stock");
   }
 });
 
